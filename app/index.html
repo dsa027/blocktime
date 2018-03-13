@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html ng-app='blocTime'>
+  <head lang="en">
+      <meta charset="UTF-8">
+      <title>Bloc Chat AngularJS</title>
+      <link rel="stylesheet" href="/styles/main.css">
+  </head>
+  <body>
+    <!-- For dual columns -->
+  <div class="container">
+    <!-- Not on room page, show "Rooms" link in right hand column -->
+    <div
+        class="col_right"
+        ng-controller="TimerCtrl as timer">
+        <!-- ui.router page -->
+        <ui-view></ui-view>
+        <div>
+          <button
+              type="button"
+              name="timer-control-button"
+              class="timer-control-button center-block"
+              ng-click="timer.timer.toggleTimer()">
+            {{ timer.timer.timerOn ? "Reset" : "Start" }}
+          </button>
+        </div>
+        <br/><br/>
+        <div>
+          <button
+              type="button"
+              name="timer-control-button"
+              class="timer-control-button"
+              ng-click="timer.timer.interruption()">
+            Interruption
+          </button>
+          <p>
+            {{ "' ".repeat(timer.timer.interruptions)}}
+          </p>
+        </div>
+      <!-- <br><br><a ui-sref="rooms" id='rooms-link'>Rooms</a> -->
+    </div>
+
+    <!-- On room page, show a list of messages for the active room -->
+    <!-- <div class="col_right"
+        ng-controller="RoomsCtrl as rooms"
+        ng-show="rooms.isOnRoomsPage()">
+      <h3 id="messages-title">
+        {{ rooms.messages.activeRoom }}
+      </h3>
+      <div
+          ng-repeat="message in rooms.messages.filterByRoom()"
+          class="zebra-stripe">
+        <span>{{ message.username }}</span>
+        <span id="right-justify">{{ message.sentAt }}</span>
+        <br>
+        <span>{{ message.content }}</span>
+      </div>
+      <div id="send-message" ng-show="rooms.messages.activeRoom">
+        <input type="text" id="send-input" ng-model="rooms.messages.newMessage">
+        <button id="send-button" class="btn" ng-click="rooms.messages.sendMessage()">Send</button>
+      </div>
+    </div> -->
+
+    <!-- On any page, show "Bloc Chat header, Username, -->
+    <!--    and "Not Me" button if we have a username -->
+    <!-- On rooms page, show "New Room" button and a list of rooms -->
+    <div class="col_left">
+      <p id="leftcolheader">
+        Bloc Time
+        <!-- <button
+            ng-show="modal.isOnRoomsPage()"
+            type="button"
+            name="new-room-button"
+            class="new-room-button"
+            ng-click="modal.newRoom.open()">
+          New Room
+        </button> -->
+      </p>
+      <p>
+        <!-- {{ modal.authenticate.newUsername }}
+        <button
+            ng-show="modal.authenticate.newUsername"
+            type="button"
+            class="new-room-button"
+            ng-click="modal.resetUsername()">
+          Not Me
+        </button> -->
+      </p>
+
+      <!-- New Room Modal -->
+      <!-- <div ng-include="'/templates/includes/new_room_modal.html'"></div> -->
+
+      <!-- Set Username Modal -->
+      <!-- <div ng-include="'/templates/includes/set_username_modal.html'"></div> -->
+
+    </div>
+
+    <!-- Angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+
+    <!-- AngularUI Router -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.min.js"></script>
+
+    <!-- FireBase -->
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+
+    <!-- AngularFire -->
+    <script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-app.js"></script> -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-auth.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-messaging.js"></script>
+
+    <!-- AngularUI Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+
+    <!-- Angular Cookies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js">
+
+    </script>
+
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyBUHr2EKZIigPukQmKmwvnJL2VXsOiXLvg",
+        authDomain: "bloc-chat-angularjs-6e588.firebaseapp.com",
+        databaseURL: "https://bloc-chat-angularjs-6e588.firebaseio.com",
+        projectId: "bloc-chat-angularjs-6e588",
+        storageBucket: "bloc-chat-angularjs-6e588.appspot.com",
+        messagingSenderId: "991387445449"
+      };
+      firebase.initializeApp(config);
+    </script>
+
+    <!-- Application Files -->
+    <script src="/scripts/app.js"></script>
+    <script src="/scripts/controllers/TimerCtrl.js"></script>
+    <script src="/scripts/services/Timer.js"></script>
+  </body>
+</html>

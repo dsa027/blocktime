@@ -1,0 +1,36 @@
+{
+  "name": "blocktime",
+  "version": "0.0.1",
+  "description": "Pomodoro-style time management",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dsa027/blocktime.git"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "David Alderson",
+  "license": "ISC",
+  "dependencies": {
+    "hapi": "^16.4.3",
+    "inert": "^4.2.1",
+    "path": "^0.4.10"
+  },
+  "engines": {
+    "node": ">=6.11.1"
+  },
+  "devDependencies": {
+    "connect-modrewrite": "^0.7.12",
+    "es5-shim": "^4.5.10"
+  },
+  "bugs": {
+    "url": "https://github.com/dsa027/blocktime/issues"
+  },
+  "homepage": "https://github.com/dsa027/blocktime#readme",
+  "keywords": [
+    "Pomodoro",
+    "Time",
+    "Management"
+  ]
+}
