@@ -2,7 +2,7 @@
 <html ng-app='blocTime'>
   <head lang="en">
       <meta charset="UTF-8">
-      <title>Bloc Chat AngularJS</title>
+      <title>Bloc Time (Angular)</title>
       <link rel="stylesheet" href="/styles/main.css">
   </head>
   <body>
@@ -29,11 +29,17 @@
               type="button"
               name="timer-control-button"
               class="timer-control-button"
+              ng-show="timer.timer.inSession && timer.timer.ticks > 0"
               ng-click="timer.timer.interruption()">
-            Interruption
+            Interrupt Session
           </button>
-          <p>
-            {{ "' ".repeat(timer.timer.interruptions)}}
+          <p id="interruption-text">
+            <ng-pluralize count="timer.timer.interruptions"
+                          when="{'0': 'No Interruptions Yet',
+                                  'one': '1 Interruption',
+                                  'other': '{} Interruptions'}"
+                          ng-style="timer.timer.interruptStyle()">
+            </ng-pluralize>
           </p>
         </div>
       <!-- <br><br><a ui-sref="rooms" id='rooms-link'>Rooms</a> -->

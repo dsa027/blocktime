@@ -1,12 +1,20 @@
 (function() {
   function Timer($interval, $filter) {
+    const SESSION_INTERVAL = 25 * 60 * 1000; // 25 minutes
+    const BREAK_INTERVAL = 5 * 60 * 1000;    // 5 minutes
+
     let Timer = {}
 
     Timer.album = "";
     Timer.interruptions = 0;
 
+    Timer.inSession = true;
     Timer.timerOn = false;
-    Timer.interval = 25 * 60 * 1000; // 25 minutes;
+    Timer.interval = SESSION_INTERVAL;
+
+    Timer.title = function title() {
+      return this.inSession ? "In Session" : "On Break";
+    }
 
     Timer.toggleTimer = function toggleTimer() {
       if (!Timer.timerOn) {
@@ -18,6 +26,8 @@
         Timer.timerOn = false;
         Timer.ticks = 0;
         $interval.cancel(Timer.timer);
+        Timer.inSession = !Timer.inSession;
+        Timer.interval = Timer.inSession ? SESSION_INTERVAL : BREAK_INTERVAL;
         Timer.ticksToTime();
       }
     }
@@ -47,6 +57,14 @@
       if (Timer.timerOn) {
         Timer.toggleTimer();
         Timer.interruptions++;
+      }
+    }
+
+    Timer.interruptStyle = function interruptStyle() {
+      switch (Timer.interruptions) {
+        case 0: return {color:'green'}; break;
+        case 1: return {color:'brown'}; break;
+        default: return {color:'red'};
       }
     }
 
