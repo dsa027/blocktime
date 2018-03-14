@@ -1,8 +1,14 @@
 (function() {
   function Timer($interval, $filter) {
-    const SESSION_INTERVAL = 25 * 60 * 1000; // 25 minutes
-    const BREAK_INTERVAL = 5 * 60 * 1000;    // 5 minutes
-    const LONG_BREAK_INTERVAL = 30 * 60 * 1000;  // 30 minutes
+    const FIVE_MINUTES = 5 * 60 * 1000;
+    const TEN_MINUTES = 10 * 60 * 1000;
+    const TWENTY_FIVE_MINUTES = 25 * 60 * 1000;
+    const THIRTY_MINUTES = 30 * 60 * 1000;
+
+    const SESSION_INTERVAL = TWENTY_FIVE_MINUTES;
+    const BREAK_INTERVAL = FIVE_MINUTES;
+    const LONG_BREAK_INTERVAL = THIRTY_MINUTES;
+
 
     let Timer = {}
 
@@ -12,6 +18,11 @@
     Timer.inSession = true;
     Timer.timerOn = false;
     Timer.interval = SESSION_INTERVAL;
+    Timer.justReset = true;
+
+    Timer.alarm = new buzz.sound("/assets/sounds/alarm.wav", {preload:true});
+    Timer.ding = new buzz.sound("/assets/sounds/ding.wav", {preload:true});
+    Timer.doubleDing = new buzz.sound("/assets/sounds/double_ding.wav", {preload:true});
 
     Timer.title = function title() {
       return this.inSession ?
@@ -35,6 +46,7 @@
         $interval.cancel(Timer.timer);
         Timer.inSession = !Timer.inSession;
         Timer.interval = getInterval();
+        Timer.justReset = true;
         Timer.ticksToTime();
       }
     }
@@ -48,6 +60,18 @@
     Timer.timerTicks = function timerTicks() {
       Timer.ticks++;
       Timer.ticksToTime();
+    }
+
+    Timer.playSound = function playSound() {
+      if (Timer.justReset) {
+        Timer.justReset = false;
+        return;
+      }
+      switch(Timer.rightNow) {
+        case 0: Timer.alarm.play(); break;  // done
+        case TEN_MINUTES: Timer.ding.play(); break; // warning
+        case FIVE_MINUTES: Timer.doubleDing.play(); break; // warning
+      }
     }
 
     Timer.ticksToTime = function ticksToTime() {

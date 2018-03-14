@@ -1,5 +1,5 @@
 (function() {
-  let btTimer = function() {
+  let btTimer = function(Timer) {
     return {
       templateUrl: '/templates/directives/bt_timer.html',
       replace: true,
@@ -26,11 +26,15 @@
         scope.handleStartButton = function handleStartButton() {
           scope.handleStart()
         }
+
+        scope.$watch('clock', function() {
+          Timer.playSound();
+        });
       }
     }
   }
 
   angular
     .module('blocTime')
-    .directive('btTimer', btTimer)
+    .directive('btTimer', ['Timer', btTimer])
 })()
