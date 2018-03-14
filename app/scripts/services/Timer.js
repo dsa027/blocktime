@@ -2,18 +2,21 @@
   function Timer($interval, $filter) {
     const SESSION_INTERVAL = 25 * 60 * 1000; // 25 minutes
     const BREAK_INTERVAL = 5 * 60 * 1000;    // 5 minutes
+    const LONG_BREAK_INTERVAL = 30 * 60 * 1000;  // 30 minutes
 
     let Timer = {}
 
-    Timer.album = "";
     Timer.interruptions = 0;
+    Timer.breaks = 0;
 
     Timer.inSession = true;
     Timer.timerOn = false;
     Timer.interval = SESSION_INTERVAL;
 
     Timer.title = function title() {
-      return this.inSession ? "In Session" : "On Break";
+      return this.inSession ?
+          "In Session"
+          : (Timer.breaks % 4 === 0) ? "On Long Break" : "On Break";
     }
 
     Timer.toggleTimer = function toggleTimer() {
@@ -27,9 +30,15 @@
         Timer.ticks = 0;
         $interval.cancel(Timer.timer);
         Timer.inSession = !Timer.inSession;
-        Timer.interval = Timer.inSession ? SESSION_INTERVAL : BREAK_INTERVAL;
+        Timer.interval = getInterval();
         Timer.ticksToTime();
       }
+    }
+
+    function getInterval() {
+      return Timer.inSession ?
+          SESSION_INTERVAL
+          : (++Timer.breaks % 4 === 0) ? LONG_BREAK_INTERVAL : BREAK_INTERVAL;
     }
 
     Timer.timerTicks = function timerTicks() {
