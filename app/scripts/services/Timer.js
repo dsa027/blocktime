@@ -19,6 +19,10 @@
           : (Timer.breaks % 4 === 0) ? "On Long Break" : "On Break";
     }
 
+    Timer.startLabel = function startLabel() {
+      return Timer.timerOn ? "Reset" : "Start";
+    }
+
     Timer.toggleTimer = function toggleTimer() {
       if (!Timer.timerOn) {
         Timer.timerOn = true;

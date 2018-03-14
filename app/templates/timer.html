@@ -1,6 +1,6 @@
-<p id="title-text" class="col">
-  {{ timer.timer.title() }}
-</p>
-<p id="timer-text" class="col">
-  {{ timer.timer.timeMmSs() }}
-</p>
+<bt-timer
+  title='{{ timer.timer.title() }}'
+  clock='{{ timer.timer.timeMmSs() }}'
+  label='{{ timer.timer.startLabel() }}'
+  handle-start='timer.timer.toggleTimer()'>
+</bt-timer>

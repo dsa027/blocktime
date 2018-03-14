@@ -1,0 +1,17 @@
+<div>
+  <p id="title-text" class="col">
+    {{ title }}
+  </p>
+  <p id="timer-text" class="col">
+    {{ clock }}
+  </p>
+  <div>
+    <button
+        type="button"
+        name="timer-control-button"
+        class="timer-control-button center-block"
+        ng-click="handleStartButton()">
+      {{ label }}
+    </button>
+  </div>
+</div>

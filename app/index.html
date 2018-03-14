@@ -14,15 +14,6 @@
         ng-controller="TimerCtrl as timer">
         <!-- ui.router page -->
         <ui-view></ui-view>
-        <div>
-          <button
-              type="button"
-              name="timer-control-button"
-              class="timer-control-button center-block"
-              ng-click="timer.timer.toggleTimer()">
-            {{ timer.timer.timerOn ? "Reset" : "Start" }}
-          </button>
-        </div>
         <br/><br/>
         <div>
           <button
@@ -42,62 +33,12 @@
             </ng-pluralize>
           </p>
         </div>
-      <!-- <br><br><a ui-sref="rooms" id='rooms-link'>Rooms</a> -->
     </div>
 
-    <!-- On room page, show a list of messages for the active room -->
-    <!-- <div class="col_right"
-        ng-controller="RoomsCtrl as rooms"
-        ng-show="rooms.isOnRoomsPage()">
-      <h3 id="messages-title">
-        {{ rooms.messages.activeRoom }}
-      </h3>
-      <div
-          ng-repeat="message in rooms.messages.filterByRoom()"
-          class="zebra-stripe">
-        <span>{{ message.username }}</span>
-        <span id="right-justify">{{ message.sentAt }}</span>
-        <br>
-        <span>{{ message.content }}</span>
-      </div>
-      <div id="send-message" ng-show="rooms.messages.activeRoom">
-        <input type="text" id="send-input" ng-model="rooms.messages.newMessage">
-        <button id="send-button" class="btn" ng-click="rooms.messages.sendMessage()">Send</button>
-      </div>
-    </div> -->
-
-    <!-- On any page, show "Bloc Chat header, Username, -->
-    <!--    and "Not Me" button if we have a username -->
-    <!-- On rooms page, show "New Room" button and a list of rooms -->
     <div class="col_left">
       <p id="leftcolheader">
         Bloc Time
-        <!-- <button
-            ng-show="modal.isOnRoomsPage()"
-            type="button"
-            name="new-room-button"
-            class="new-room-button"
-            ng-click="modal.newRoom.open()">
-          New Room
-        </button> -->
       </p>
-      <p>
-        <!-- {{ modal.authenticate.newUsername }}
-        <button
-            ng-show="modal.authenticate.newUsername"
-            type="button"
-            class="new-room-button"
-            ng-click="modal.resetUsername()">
-          Not Me
-        </button> -->
-      </p>
-
-      <!-- New Room Modal -->
-      <!-- <div ng-include="'/templates/includes/new_room_modal.html'"></div> -->
-
-      <!-- Set Username Modal -->
-      <!-- <div ng-include="'/templates/includes/set_username_modal.html'"></div> -->
-
     </div>
 
     <!-- Angular -->
@@ -144,5 +85,6 @@
     <script src="/scripts/app.js"></script>
     <script src="/scripts/controllers/TimerCtrl.js"></script>
     <script src="/scripts/services/Timer.js"></script>
+    <script src="/scripts/directives/btTimer.js"></script>
   </body>
 </html>
