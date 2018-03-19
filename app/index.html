@@ -42,14 +42,17 @@
       <p id="leftcolheader">
         Bloc Time
       </p>
-      <div ng-controller="TasksCtrl as tasks">
+      <div ng-controller="TasksCtrl as tasks" id="new-task">
         New Task
         <br/>
         <input type="text" id="send-input" ng-model="tasks.tasks.newTaskName">
         <button id="send-button" class="btn" ng-click="tasks.tasks.add()">Add</button>
         <br/>
         <br/>
-        <div ng-include="'/templates/tasks.html'"></div>
+        <div
+            ng-include="'/templates/tasks.html'"
+            id="task-list">
+        </div>
       </div>
     </div>
 

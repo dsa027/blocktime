@@ -7,7 +7,21 @@
       ng-repeat="task in tasks.tasks.all track by $index"
       ng-click="tasks.tasks.focus(task)">
     <span
-        class="task-date-input"
+        id="{{ 'opened-' + $index }}"
+        class="ion-android-arrow-dropdown open-close-arrow"
+        ng-style="{'font-size':'21px'}"
+        ng-show="tasks.tasks.isOpen[$index]"
+        ng-click="tasks.tasks.openTask($index)">
+    </span>
+    <span
+        id="{{ 'closed-' + $index }}"
+        class="ion-android-arrow-dropright open-close-arrow"
+        ng-style="{'font-size':'21px'}"
+        ng-show="!tasks.tasks.isOpen[$index]"
+        ng-click="tasks.tasks.openTask($index)">
+    </span>
+    <span
+        class="task-name"
         ng-show="!tasks.tasks.isEditingThisTask(task)">
       {{ task.name }}
       &nbsp;
@@ -24,21 +38,24 @@
     <span
         class="ion-edit"
         ng-style="{'font-size': '12px'}"
-        ng-click="tasks.tasks.editTask()">
+        ng-click="tasks.tasks.editTask($index)">
     </span>
 
     <!-- Expires on -->
     <div class="input-group">
-      <span class="task-header">Expire: </span>
+      <span
+          ng-show="tasks.tasks.isOpen[$index]"
+          class="task-header">Expire:
+      </span>
       <span
         class="task-date-input"
-        ng-show="!tasks.tasks.isEditingThisTask(task)">
+        ng-show="!tasks.tasks.isEditingThisTask(task) && tasks.tasks.isOpen[$index]">
         {{ tasks.tasks.showDate(task.expire_on) }}
       </span>
       <input
           id="{{ 'expire-no-' + $index }}"
           class="form-control task-date-input"
-          ng-show="tasks.tasks.isEditingThisTask(task)"
+          ng-show="tasks.tasks.isEditingThisTask(task) && tasks.tasks.isOpen[$index]"
           type="date"
           ng-model="tasks.tasks.currentTask.expire_on"
       />
@@ -46,16 +63,19 @@
 
     <!-- Valid on -->
     <div class="input-group">
-      <span class="task-header">Valid: </span>
+      <span
+          ng-show="tasks.tasks.isOpen[$index]"
+          class="task-header">Valid:
+      </span>
       <span
         class="task-date-input"
-        ng-show="!tasks.tasks.isEditingThisTask(task)">
+        ng-show="!tasks.tasks.isEditingThisTask(task) && tasks.tasks.isOpen[$index]">
         {{ tasks.tasks.showDate(task.valid_on) }}
       </span>
       <input
           id="{{ 'expire-no-' + $index }}"
           class="form-control task-date-input"
-          ng-show="tasks.tasks.isEditingThisTask(task)"
+          ng-show="tasks.tasks.isEditingThisTask(task) && tasks.tasks.isOpen[$index]"
           type="date"
           ng-model="tasks.tasks.currentTask.valid_on"
       />
@@ -63,17 +83,20 @@
 
     <!-- Session estimate -->
     <div>
-      <span class="task-header">Est. Sessions: </span>
+      <span
+          ng-show="tasks.tasks.isOpen[$index]"
+          class="task-header">Est. Sessions:
+      </span>
       <span
         class="task-date-input"
-        ng-show="!tasks.tasks.isEditingThisTask(task)">
+        ng-show="!tasks.tasks.isEditingThisTask(task) && tasks.tasks.isOpen[$index]">
         {{ task.session_estimate }}
       </span>
       <input
           id="{{ 'estimate-no-' + $index }}"
           type="number"
           class="form-control task-date-input"
-          ng-show="tasks.tasks.isEditingThisTask(task)"
+          ng-show="tasks.tasks.isEditingThisTask(task) && tasks.tasks.isOpen[$index]"
           ng-model="task.session_estimate"
           ng-required="true"
           ng-change="tasks.tasks.fo" />

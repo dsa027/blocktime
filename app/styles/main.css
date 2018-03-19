@@ -15,9 +15,35 @@ body {
 	/* font-size:90%; */
 	padding-bottom: 35px;
 }
+.zebra-stripe:nth-of-type(odd) {
+	background: #d4d4d4;
+}
+.zebra-stripe:nth-of-type(even) {
+	background: #f4f4f4;
+}
+.zebra-stripe {
+	/* line-height: 1.25rem; */
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+.open-close-arrow {
+	margin-right: 2px;
+	margin-left: 2px;
+}
+#new-task {
+	margin-left: 8px;
+}
 #task-title {
 	text-align: center;
 	background-color: inherit;
+	color: darkblue;
+}
+#all-tasks {
+	padding-top: 8px;
+}
+.task-name {
+	margin-left: 2px;
+	font-size: .90rem;
 	color: darkblue;
 }
 .task-header {
@@ -85,20 +111,10 @@ body {
 	text-align: center;
 	padding-bottom: 8px;
 }
-
-#all-tasks {
-	padding-top: 12px;
-}
-
 #task-list {
-	list-style: none;
-	line-height: 2;
-	font-size: 14px;
-	border: 1px solid black;
-	padding: 4px;
+	margin-left: -10px;
 }
-
-.nav, .pagination, .carousel, .panel-title a, #task-list {
+.nav, .pagination, .carousel, .panel-title a {
 	cursor: pointer;
 }
 
@@ -263,20 +279,6 @@ body {
 	font-size: 24px;
 }
 
-.zebra-stripe:nth-of-type(odd) {
-	background: #d4d4d4;
-}
-
-.zebra-stripe:nth-of-type(even) {
-	background: #f4f4f4;
-}
-
-.zebra-stripe {
-	line-height: 1.25rem;
-	padding-top: 8px;
-	padding-bottom: 8px;
-}
-
 #send-message {
 	position: fixed;
 	bottom: 0;
@@ -314,6 +316,10 @@ body {
 }
 .column_wrap {position:relative;}
 
+#leftcolheader {
+	text-align: center;
+}
+
 .col_left {
 	background-color: #f4f4f4;
 	width:25%;
@@ -322,7 +328,7 @@ body {
 	bottom:0;
 	height:auto;
 	display: block;
-	padding-left: 8px;
+	padding-left: 2px;
 }
 .col_right {
 	margin-left:26.25%;

@@ -4,7 +4,7 @@
     const tNow = Date.now();
     const dZero = new Date(0);
 
-    Tasks.ref = firebase.database().ref().child("tasks").orderByChild('updated');
+    Tasks.ref = firebase.database().ref().child("tasks").orderByChild('created');
     Tasks.all = $firebaseArray(Tasks.ref);
 
     Tasks.newTaskName = "";
@@ -13,6 +13,10 @@
     Tasks.currentTask.name = Tasks.DEFAULT_TEXT;
     Tasks.editing = false;
     Tasks.newTaskName = "";
+    Tasks.isOpen = [];
+
+    // Tasks.ref.on('value', function(snapshot) {
+    // });
 
     Tasks.add = function add() {
       if (!Tasks.newTaskName) return;
@@ -72,14 +76,15 @@
     }
 
     Tasks.save = function save(idx) {
-      dateToMillis(Tasks.currentTask);
       Tasks.all[idx] = Tasks.currentTask;
+      dateToMillis(Tasks.all[idx]);
       Tasks.all.$save(idx).then(
         function(snapshot) {},
         function(error) {
           console.log(`Error saving: ${error}`)
         }
       );
+      // convert Date(0).toString() to 0L
       millisToDate(Tasks.currentTask);
     }
 
@@ -114,14 +119,19 @@
       return Tasks.editing && Tasks.isCurrentTask(task)
     }
 
-    Tasks.editTask = function editTask() {
+    Tasks.editTask = function editTask(index) {
       Tasks.editing = true;
+      Tasks.isOpen[index] = true;
     }
 
     Tasks.doneEditingTask = function doneEditingTask(index) {
       Tasks.currentTask.updated = new Date().getTime();
       Tasks.save(index);
       Tasks.editing = false;
+    }
+
+    Tasks.openTask = function openTask(index) {
+      Tasks.isOpen[index] = !Tasks.isOpen[index];
     }
 
     Tasks.completeTask = function completeTask(index) {

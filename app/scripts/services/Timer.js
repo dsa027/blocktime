@@ -14,14 +14,6 @@
 
     Timer.onToggleCallbacks = [];
 
-    // Timer.interruptions = 0;
-    // Timer.breaks = 0;
-    //
-    // Timer.inSession = true;
-    // Timer.timerOn = false;
-    // Timer.interval = SESSION_INTERVAL;
-    // Timer.justReset = true;
-
     Timer.alarm = new buzz.sound("/assets/sounds/alarm.wav", {preload:true});
     Timer.ding = new buzz.sound("/assets/sounds/ding.wav", {preload:true});
     Timer.doubleDing = new buzz.sound("/assets/sounds/double_ding.wav", {preload:true});
