@@ -4,32 +4,35 @@
       <meta charset="UTF-8">
       <title>Bloc Time (Angular)</title>
       <link rel="stylesheet" href="/styles/main.css">
+      <!-- Ion Icons -->
+      <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"></link>
+
   </head>
   <body>
     <!-- For dual columns -->
   <div class="container">
-    <!-- Not on room page, show "Rooms" link in right hand column -->
+    <h1 id="task-title" class="col_right" ng-controller="TasksCtrl as tasks">{{ tasks.tasks.currentTask.name }}</h1>
     <div
         class="col_right"
-        ng-controller="TimerCtrl as timer">
+        ng-controller="HomeCtrl as home">
         <!-- ui.router page -->
         <ui-view></ui-view>
         <br/><br/>
         <div>
           <button
               type="button"
-              name="timer-control-button"
-              class="timer-control-button"
-              ng-show="timer.timer.inSession && timer.timer.ticks > 0"
-              ng-click="timer.timer.interruption()">
+              name="normal-app-button"
+              class="normal-app-button"
+              ng-show="home.timer.inSession && home.timer.ticks > 0"
+              ng-click="home.timer.interruption()">
             Interrupt Session
           </button>
           <p id="interruption-text">
-            <ng-pluralize count="timer.timer.interruptions"
+            <ng-pluralize count="home.timer.interruptions"
                           when="{'0': 'No Interruptions Yet',
                                   'one': '1 Interruption',
                                   'other': '{} Interruptions'}"
-                          ng-style="timer.timer.interruptStyle()">
+                          ng-style="home.timer.interruptStyle()">
             </ng-pluralize>
           </p>
         </div>
@@ -39,6 +42,15 @@
       <p id="leftcolheader">
         Bloc Time
       </p>
+      <div ng-controller="TasksCtrl as tasks">
+        New Task
+        <br/>
+        <input type="text" id="send-input" ng-model="tasks.tasks.newTaskName">
+        <button id="send-button" class="btn" ng-click="tasks.tasks.add()">Add</button>
+        <br/>
+        <br/>
+        <div ng-include="'/templates/tasks.html'"></div>
+      </div>
     </div>
 
     <!-- Angular -->
@@ -67,27 +79,30 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js">
 
     </script>
-    
+
     <!-- Buzz Player -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/buzz/1.1.0/buzz.min.js"></script>
 
     <script>
       // Initialize Firebase
       var config = {
-        apiKey: "AIzaSyBUHr2EKZIigPukQmKmwvnJL2VXsOiXLvg",
-        authDomain: "bloc-chat-angularjs-6e588.firebaseapp.com",
-        databaseURL: "https://bloc-chat-angularjs-6e588.firebaseio.com",
-        projectId: "bloc-chat-angularjs-6e588",
-        storageBucket: "bloc-chat-angularjs-6e588.appspot.com",
-        messagingSenderId: "991387445449"
+        apiKey: "AIzaSyAs9w43-fk3i2TCZ3egpTnMPLnCbux-3t8",
+        authDomain: "bloctime-dsa027.firebaseapp.com",
+        databaseURL: "https://bloctime-dsa027.firebaseio.com",
+        projectId: "bloctime-dsa027",
+        storageBucket: "bloctime-dsa027.appspot.com",
+        messagingSenderId: "404448305050"
       };
       firebase.initializeApp(config);
     </script>
 
     <!-- Application Files -->
     <script src="/scripts/app.js"></script>
-    <script src="/scripts/controllers/TimerCtrl.js"></script>
+    <script src="/scripts/controllers/HomeCtrl.js"></script>
+    <script src="/scripts/controllers/TasksCtrl.js"></script>
     <script src="/scripts/services/Timer.js"></script>
+    <script src="/scripts/services/Tasks.js"></script>
     <script src="/scripts/directives/btTimer.js"></script>
+
   </body>
 </html>

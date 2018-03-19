@@ -1,5 +1,5 @@
 <div>
-  <p id="title-text" class="col">
+  <p id="timer-title" class="col">
     {{ title }}
   </p>
   <p id="timer-text" class="col">
@@ -8,8 +8,9 @@
   <div>
     <button
         type="button"
-        name="timer-control-button"
-        class="timer-control-button center-block"
+        name="normal-app-button"
+        class="normal-app-button center-block"
+        ng-disabled="tasks().currentTask.name === tasks().DEFAULT_TEXT"
         ng-click="handleStartButton()">
       {{ label }}
     </button>

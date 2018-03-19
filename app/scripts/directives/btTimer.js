@@ -1,5 +1,5 @@
 (function() {
-  let btTimer = function(Timer) {
+  let btTimer = function(Timer, Tasks) {
     return {
       templateUrl: '/templates/directives/bt_timer.html',
       replace: true,
@@ -10,6 +10,10 @@
       },
       link: function(scope, element, attrs) {
         // var btTimer = $(element);
+
+        scope.tasks = function tasks() {
+          return Tasks;
+        }
 
         attrs.$observe('title', function(value) {
           scope.title = value;
@@ -36,5 +40,5 @@
 
   angular
     .module('blocTime')
-    .directive('btTimer', ['Timer', btTimer])
+    .directive('btTimer', ['Timer', 'Tasks', btTimer])
 })()

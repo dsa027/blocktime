@@ -12,17 +12,41 @@
 
     let Timer = {}
 
-    Timer.interruptions = 0;
-    Timer.breaks = 0;
+    Timer.onToggleCallbacks = [];
 
-    Timer.inSession = true;
-    Timer.timerOn = false;
-    Timer.interval = SESSION_INTERVAL;
-    Timer.justReset = true;
+    // Timer.interruptions = 0;
+    // Timer.breaks = 0;
+    //
+    // Timer.inSession = true;
+    // Timer.timerOn = false;
+    // Timer.interval = SESSION_INTERVAL;
+    // Timer.justReset = true;
 
     Timer.alarm = new buzz.sound("/assets/sounds/alarm.wav", {preload:true});
     Timer.ding = new buzz.sound("/assets/sounds/ding.wav", {preload:true});
     Timer.doubleDing = new buzz.sound("/assets/sounds/double_ding.wav", {preload:true});
+
+    Timer.ticksToTime = function ticksToTime() {
+      if (Timer.ticks * 1000 > Timer.interval) {
+        Timer.rightNow = -((Timer.ticks * 1000) - Timer.interval);
+      }
+      else {
+        Timer.rightNow = Timer.interval - (Timer.ticks * 1000);
+      }
+    }
+
+    Timer.init = function() {
+      Timer.interruptions = 0;
+      Timer.breaks = 0;
+
+      Timer.inSession = true;
+      Timer.timerOn = false;
+      Timer.interval = SESSION_INTERVAL;
+      Timer.justReset = true;
+      Timer.ticks = 0;
+      Timer.ticksToTime();
+    }
+    Timer.init();
 
     Timer.title = function title() {
       return this.inSession ?
@@ -30,8 +54,29 @@
           : (Timer.breaks % 4 === 0) ? "On Long Break" : "On Break";
     }
 
+    Timer.registerOnToggle = function registerOnToggle(func) {
+      if (!Timer.onToggleCallbacks.find(item => {
+        return item === func;
+      })) {
+        Timer.onToggleCallbacks.push(func);
+      }
+    }
+
+    Timer.unregisterOnToggle = function unregisterOnToggle(func) {
+      const idx = Timer.onToggleCallbacks.indexOf(func);
+      if (idx !== -1) {
+        Timer.onToggleCallbacks.splice(idx, 1);
+      }
+    }
+
     Timer.startLabel = function startLabel() {
       return Timer.timerOn ? "Reset" : "Start";
+    }
+
+    Timer.onToggle = function onToggle() {
+      Timer.onToggleCallbacks.forEach(callback => {
+        callback();
+      })
     }
 
     Timer.toggleTimer = function toggleTimer() {
@@ -41,6 +86,9 @@
         Timer.timer = $interval(Timer.timerTicks, 1000)
       }
       else {
+        if (Timer.inSession) {
+          Timer.onToggle();
+        }
         Timer.timerOn = false;
         Timer.ticks = 0;
         $interval.cancel(Timer.timer);
@@ -71,15 +119,6 @@
         case 0: Timer.alarm.play(); break;  // done
         case TEN_MINUTES: Timer.ding.play(); break; // warning
         case FIVE_MINUTES: Timer.doubleDing.play(); break; // warning
-      }
-    }
-
-    Timer.ticksToTime = function ticksToTime() {
-      if (Timer.ticks * 1000 > Timer.interval) {
-        Timer.rightNow = -((Timer.ticks * 1000) - Timer.interval);
-      }
-      else {
-        Timer.rightNow = Timer.interval - (Timer.ticks * 1000);
       }
     }
 

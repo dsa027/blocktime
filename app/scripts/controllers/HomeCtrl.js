@@ -1,9 +1,9 @@
 (function() {
-  function TimerCtrl(Timer) {
+  function HomeCtrl(Timer) {
     this.timer = Timer;
   }
 
   angular
     .module('blocTime')
-    .controller('TimerCtrl', ['Timer', TimerCtrl])
+    .controller('HomeCtrl', ['Timer', HomeCtrl])
 })()

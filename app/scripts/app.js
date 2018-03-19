@@ -6,31 +6,17 @@
          requireBase: false
       })
 
-    // $stateProvider
-    //   .state('home', {
-    //      url: '/',
-    //      controller: 'HomeCtrl as home',
-    //      templateUrl: '/templates/home.html'
-    //   })
-
-    // $stateProvider
-    //   .state('rooms', {
-    //      url: '/',
-    //      controller: 'RoomsCtrl as rooms',
-    //      templateUrl: '/templates/rooms.html'
-    //   })
-
     $stateProvider
       .state('timer', {
          url: '/',
-         controller: 'TimerCtrl as timer',
-         templateUrl: '/templates/timer.html'
+         controller: 'HomeCtrl as home',
+         templateUrl: '/templates/home.html'
       })
   }
 
   angular
     .module('blocTime', [
-        'ui.router', 'firebase', 'ui.bootstrap.modal', 'ngCookies'
+        'ui.router', 'firebase', 'ui.bootstrap.modal', 'ui.bootstrap', 'ngCookies'
     ])
     .config(config)
 })()
