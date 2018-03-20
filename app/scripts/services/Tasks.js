@@ -1,10 +1,9 @@
 (function() {
   function Tasks($firebaseArray, Timer) {
     const Tasks = {};
-    const tNow = Date.now();
     const dZero = new Date(0);
 
-    Tasks.ref = firebase.database().ref().child("tasks").orderByChild('created');
+    Tasks.ref = firebase.database().ref().child("tasks").orderByChild('desc_created');
     Tasks.all = $firebaseArray(Tasks.ref);
 
     Tasks.newTaskName = "";
@@ -21,6 +20,8 @@
     Tasks.add = function add() {
       if (!Tasks.newTaskName) return;
 
+      const tNow = Date.now();
+
       Tasks.all.$add({
         name: Tasks.newTaskName,
         valid_on: tNow,
@@ -30,6 +31,7 @@
         session_actual: 0,
         created: tNow,
         updated: tNow,
+        desc_created: 0 - tNow,
       });
       Tasks.newTaskName = "";
     }
@@ -56,6 +58,8 @@
         if (key.endsWith('_on')) {
           if (val === 0) what[key] = "";
           else what[key] = new Date(val);
+
+          if (what[key] == "Invalid Date") what[key] = "";
         }
       });
     }
@@ -78,6 +82,7 @@
     Tasks.save = function save(idx) {
       Tasks.all[idx] = Tasks.currentTask;
       dateToMillis(Tasks.all[idx]);
+
       Tasks.all.$save(idx).then(
         function(snapshot) {},
         function(error) {
