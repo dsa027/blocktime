@@ -1,0 +1,126 @@
+<div>
+  <span
+      id="{{ 'opened-' + $index }}"
+      class="ion-android-arrow-dropdown open-close-arrow"
+      ng-style="{'font-size':'21px'}"
+      ng-show="tasks.tasks.isTaskOpen(task)"
+      ng-click="tasks.tasks.toggleOpenTask(task)">
+  </span>
+  <span
+      id="{{ 'closed-' + $index }}"
+      class="ion-android-arrow-dropright open-close-arrow"
+      ng-style="{'font-size':'21px'}"
+      ng-show="!tasks.tasks.isTaskOpen(task)"
+      ng-click="tasks.tasks.toggleOpenTask(task)">
+  </span>
+  <span
+      class="task-name"
+      ng-show="!tasks.tasks.isEditingThisTask(task)">
+    {{ task.name }}
+    &nbsp;
+    {{ "X ".repeat(task.session_actual) }}
+  </span>
+  <input
+      id="{{ 'title-' + $index }}"
+      type="text"
+      class="form-control task-date-input"
+      ng-show="tasks.tasks.isEditingThisTask(task)"
+      ng-model="task.name"
+      ng-required="true" />
+  &nbsp;
+  <span
+      class="ion-edit"
+      ng-style="{'font-size': '12px'}"
+      ng-show="tasks.tasks.isIncompleteTask(task)"
+      ng-click="tasks.tasks.editTask($index, task)">
+  </span>
+
+  <!-- Expires on -->
+  <div class="input-group">
+    <span
+        ng-show="tasks.tasks.isTaskOpen(task)"
+        class="task-header">Expire:
+    </span>
+    <span
+      class="task-date-input"
+      ng-show="!tasks.tasks.isEditingThisTask(task) && tasks.tasks.isTaskOpen(task)">
+      {{ tasks.tasks.showDate(task.expire_on) }}
+    </span>
+    <input
+        id="{{ 'expire-no-' + $index }}"
+        class="form-control task-date-input"
+        ng-show="tasks.tasks.isEditingThisTask(task) && tasks.tasks.isTaskOpen(task)"
+        ng-change="tasks.tasks.isExpiring()"
+        type="date"
+        ng-model="tasks.tasks.currentTask.expire_on"
+    />
+  </div>
+
+  <!-- Valid on -->
+  <div class="input-group">
+    <span
+        ng-show="tasks.tasks.isTaskOpen(task)"
+        class="task-header">Valid:
+    </span>
+    <span
+      class="task-date-input"
+      ng-show="!tasks.tasks.isEditingThisTask(task) && tasks.tasks.isTaskOpen(task)">
+      {{ tasks.tasks.showDate(task.valid_on) }}
+    </span>
+    <input
+        id="{{ 'expire-no-' + $index }}"
+        class="form-control task-date-input"
+        ng-show="tasks.tasks.isEditingThisTask(task) && tasks.tasks.isTaskOpen(task)"
+        ng-change="tasks.tasks.isInvalid()"
+        type="date"
+        ng-model="tasks.tasks.currentTask.valid_on"
+    />
+  </div>
+
+  <!-- Session estimate -->
+  <div>
+    <span
+        ng-show="tasks.tasks.isTaskOpen(task)"
+        class="task-header">Est. Sessions:
+    </span>
+    <span
+      class="task-date-input"
+      ng-show="!tasks.tasks.isEditingThisTask(task) && tasks.tasks.isTaskOpen(task)">
+      {{ task.session_estimate }}
+    </span>
+    <input
+        id="{{ 'estimate-no-' + $index }}"
+        type="number"
+        class="form-control task-date-input"
+        ng-show="tasks.tasks.isEditingThisTask(task) && tasks.tasks.isTaskOpen(task)"
+        ng-model="task.session_estimate"
+        ng-required="true"
+        ng-change="tasks.tasks.fo" />
+  </div>
+
+  <!-- If editing, show 'end edit' button or if current show
+  'task complete' button -->
+  <div>
+    <button
+        type="button"
+        ng-show="tasks.tasks.isEditingThisTask(task)"
+        class="task-small-button"
+        ng-click="$event.stopPropagation();tasks.tasks.saveTask(task)">
+      Done Editing
+    </button>
+    <button
+        type="button"
+        ng-show="tasks.tasks.isCurrentTask(task) && !tasks.tasks.isEditingThisTask(task)"
+        class="task-small-button"
+        ng-click="$event.stopPropagation();tasks.tasks.completeTask(task)">
+      Task Complete
+    </button>
+    <button
+        type="button"
+        ng-show="tasks.tasks.isCompleteTask(task)"
+        class="task-small-button"
+        ng-click="$event.stopPropagation();tasks.tasks.incompleteTask(task)">
+      Mark Incomplete
+    </button>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 (function() {
-  function Timer($interval, $filter) {
+  function Timer($interval, $filter, AnalogTimer) {
     const FIVE_MINUTES = 5 * 60 * 1000;
     const TEN_MINUTES = 10 * 60 * 1000;
     const TWENTY_FIVE_MINUTES = 25 * 60 * 1000;
@@ -9,10 +9,12 @@
     const BREAK_INTERVAL = FIVE_MINUTES;
     const LONG_BREAK_INTERVAL = THIRTY_MINUTES;
 
-
-    let Timer = {}
+    let Timer = {};
 
     Timer.onToggleCallbacks = [];
+
+    Timer.showAnalogTimer = true;
+    Timer.analogTimerInitialized = false;
 
     Timer.alarm = new buzz.sound("/assets/sounds/alarm.wav", {preload:true});
     Timer.ding = new buzz.sound("/assets/sounds/ding.wav", {preload:true});
@@ -39,6 +41,16 @@
       Timer.ticksToTime();
     }
     Timer.init();
+
+    Timer.showAnalog = function showAnalog() {
+      Timer.analogTimerInitialized = false;
+      Timer.initAnalog();
+      Timer.showAnalogTimer = true;
+    }
+
+    Timer.showDigital = function showDigital() {
+      Timer.showAnalogTimer = false;
+    }
 
     Timer.title = function title() {
       return this.inSession ?
@@ -114,9 +126,31 @@
       }
     }
 
+    Timer.getMinutes = function getMinutes() {
+      return Timer.minutes;
+    }
+    Timer.getSeconds = function getSeconds() {
+      return Timer.seconds;
+    }
+
+    Timer.initAnalog = function initAnalog() {
+      if (Timer.showAnalogTimer && !Timer.analogTimerInitialized) {
+        Timer.analogTimerInitialized = AnalogTimer.init(Timer.getMinutes, Timer.getSeconds);
+      }
+    }
+
     Timer.timeMmSs = function timeMmSs() {
+      Timer.initAnalog();
+
       var negative = Timer.rightNow < 0;
       var t = negative ? -Timer.rightNow : Timer.rightNow;
+
+      if (Timer.showAnalogTimer && Timer.analogTimerInitialized) {
+        const d = new Date(t);
+        Timer.minutes = d.getMinutes();
+        Timer.seconds = d.getSeconds();
+        AnalogTimer.drawClock();
+      }
 
       return `${negative ? "-" : ""}${$filter('date')(t, "mm:ss")}`
     }
@@ -144,5 +178,5 @@
 
 angular
    .module('blocTime')
-   .factory('Timer', ['$interval', '$filter', Timer])
+   .factory('Timer', ['$interval', '$filter', 'AnalogTimer', Timer])
 })();

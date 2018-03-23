@@ -6,13 +6,83 @@
     Tasks.ref = firebase.database().ref().child("tasks").orderByChild('desc_created');
     Tasks.all = $firebaseArray(Tasks.ref);
 
+    Tasks.DEFAULT_TEXT = "Please Click on an Incomplete Task";
+
     Tasks.newTaskName = "";
-    Tasks.currentTask = {};
-    Tasks.DEFAULT_TEXT = "Please Choose a Task";
-    Tasks.currentTask.name = Tasks.DEFAULT_TEXT;
     Tasks.editing = false;
-    Tasks.newTaskName = "";
     Tasks.isOpen = [];
+    Tasks.filtered = {};
+
+    Tasks.clearCurrentTask = function clearCurrentTask() {
+      Tasks.currentTask = {};
+      Tasks.currentTask.name = Tasks.DEFAULT_TEXT;
+    }
+    Tasks.clearCurrentTask();
+
+    Tasks.startButtonDisabled = function startButtonDisabled() {
+      return Tasks.currentTask.name === Tasks.DEFAULT_TEXT;
+    }
+
+    Tasks.filterByIncomplete = function filterByIncomplete() {
+      const now = new Date().getTime();
+      Tasks.filtered.incomplete = Tasks.all.filter(task => {
+        return !task.completed_on &&
+            (!task.expire_on || (task.expire_on && task.expire_on > now)) &&
+            (!task.valid_on || (task.valid_on && task.valid_on <= now));
+      });
+      return Tasks.filtered.incomplete;
+    }
+    Tasks.incompleteLength = function incompleteLength() {
+      return Tasks.filterByIncomplete().length;
+    }
+
+    Tasks.filterByComplete = function filterByComplete() {
+      Tasks.filtered.complete = Tasks.all.filter(task => {
+        return task.completed_on;
+      });
+      return Tasks.filtered.complete;
+    }
+    Tasks.completeLength = function completeLength() {
+      return Tasks.filterByComplete().length;
+    }
+
+    Tasks.filterByExpired = function filterByExpired() {
+      const now = new Date().getTime();
+      Tasks.filtered.expired = Tasks.all.filter(task => {
+        return !task.completed_on &&
+            task.expire_on && task.expire_on <= now;
+      });
+      return Tasks.filtered.expired;
+    }
+    Tasks.expiredLength = function expiredLength() {
+      return Tasks.filterByExpired().length;
+    }
+
+    Tasks.filterByInvalid = function filterByInvalid() {
+      const now = new Date().getTime();
+      Tasks.filtered.invalid = Tasks.all.filter(task => {
+        return !task.completed_on && task.valid_on &&
+            task.valid_on > now;
+      });
+      return Tasks.filtered.invalid;
+    }
+    Tasks.invalidLength = function invalidLength() {
+      return Tasks.filterByInvalid().length;
+    }
+
+    Tasks.isExpiring = function isExpiring() {
+      if (new Date(Tasks.currentTask.expire_on).getTime() <= new Date().getTime()) {
+        Tasks.saveTask(Tasks.currentTask); // saves task
+        Tasks.clearCurrentTask();
+      }
+    }
+
+    Tasks.isInvalid = function isInvalid() {
+      if (new Date(Tasks.currentTask.valid_on).getTime() > new Date().getTime()) {
+        Tasks.saveTask(Tasks.currentTask); // saves task
+        Tasks.clearCurrentTask();
+      }
+    }
 
     // Tasks.ref.on('value', function(snapshot) {
     // });
@@ -37,17 +107,36 @@
     }
 
     Tasks.endOfSession = function endOfSession() {
-      Tasks.currentTask.session_actual += 1;
-      const idx = findCurrentTask();
-      if (idx !== -1) {
-        Tasks.save(idx);
+      if (!Tasks.isIncompleteTask(Tasks.currentTask)) {
+        return;
       }
+      Tasks.currentTask.session_actual += 1;
+      Tasks.save(Tasks.findTask(Tasks.currentTask));
     }
+
     Timer.registerOnToggle(Tasks.endOfSession);
 
-    function findCurrentTask() {
+    function findIncompleteTask(lookingFor) {
+      return Tasks.filtered.incomplete.findIndex(task => {
+        return lookingFor.$id === task.$id;
+      });
+    }
+    function findCompleteTask(lookingFor) {
+      return Tasks.filtered.complete.findIndex(task => {
+        return lookingFor.$id === task.$id;
+      });
+    }
+
+    Tasks.isIncompleteTask = function isIncompleteTask(task) {
+      return findIncompleteTask(task) !== -1;
+    }
+    Tasks.isCompleteTask = function isCompleteTask(task) {
+      return findCompleteTask(task) !== -1;
+    }
+
+    Tasks.findTask = function findTask(lookingFor) {
       return Tasks.all.findIndex(task => {
-        return Tasks.currentTask.$id === task.$id;
+        return lookingFor.$id === task.$id;
       });
     }
 
@@ -79,12 +168,17 @@
       });
     }
 
-    Tasks.save = function save(idx) {
+    Tasks.save = function save(task) {
+      const idx = Tasks.findTask(task);
+      if (idx === -1) {
+        return;
+      }
       Tasks.all[idx] = Tasks.currentTask;
       dateToMillis(Tasks.all[idx]);
 
       Tasks.all.$save(idx).then(
-        function(snapshot) {},
+        function(snapshot) {
+        },
         function(error) {
           console.log(`Error saving: ${error}`)
         }
@@ -94,11 +188,15 @@
     }
 
     Tasks.focus = function focus(task) {
+      if (!Tasks.isIncompleteTask(task)) return;
+
       Timer.init();
       if (task.$id !== Tasks.currentTask.$id) {
+        Tasks.closeTask(Tasks.currentTask);
         Tasks.editing = false;
       }
       Tasks.currentTask = task;
+      Tasks.openTask(Tasks.currentTask);
       // from date's milliseconds to Date object
       millisToDate(Tasks.currentTask);
     }
@@ -124,26 +222,66 @@
       return Tasks.editing && Tasks.isCurrentTask(task)
     }
 
-    Tasks.editTask = function editTask(index) {
+    Tasks.editTask = function editTask(index, task) {
+      if (!Tasks.isIncompleteTask(task)) return;
+
       Tasks.editing = true;
       Tasks.isOpen[index] = true;
     }
 
-    Tasks.doneEditingTask = function doneEditingTask(index) {
+    Tasks.saveTask = function saveTask(task) {
       Tasks.currentTask.updated = new Date().getTime();
-      Tasks.save(index);
+      Tasks.save(task);
       Tasks.editing = false;
     }
 
-    Tasks.openTask = function openTask(index) {
-      Tasks.isOpen[index] = !Tasks.isOpen[index];
+    Tasks.isTaskOpen = function isTaskOpen(task) {
+      const idx = Tasks.findTask(task);
+      if (idx !== -1) {
+        return Tasks.isOpen[idx];
+      }
+
+      return false;
     }
 
-    Tasks.completeTask = function completeTask(index) {
-      const dNow = new Date();
-      Tasks.currentTask.completed_on = dNow;
-      Tasks.currentTask.updated = dNow;
-      Tasks.save(index);
+    Tasks.toggleOpenTask = function toggleOpenTask(task) {
+      const idx = Tasks.findTask(task);
+      if (idx !== -1) {
+        Tasks.isOpen[idx] = !Tasks.isOpen[idx];
+      }
+    }
+    Tasks.closeTask = function closeTask(task) {
+      const idx = Tasks.findTask(task);
+      if (idx !== -1) {
+        Tasks.isOpen[idx] = false;
+      }
+    }
+    Tasks.openTask = function openTask(task) {
+      const idx = Tasks.findTask(task);
+      if (idx !== -1) {
+        Tasks.isOpen[idx] = true
+      }
+    }
+
+    Tasks.completeTask = function completeTask(task) {
+      const now = new Date();
+      Tasks.currentTask.completed_on = now;
+      Tasks.currentTask.updated = now;
+      if (Timer.timerOn) {
+        Timer.toggleTimer();
+      }
+      Tasks.save(task);
+      Tasks.clearCurrentTask();
+    }
+
+    Tasks.incompleteTask = function incompleteTask(task) {
+      const currentHold = Tasks.currentTask;
+      Tasks.currentTask = task;
+      millisToDate(Tasks.currentTask);
+      Tasks.currentTask.completed_on = new Date(0);
+      Tasks.currentTask.updated = new Date();
+      Tasks.save(task);
+      Tasks.currentTask = currentHold;
     }
 
     return Tasks;

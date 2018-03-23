@@ -15,6 +15,24 @@ body {
 	/* font-size:90%; */
 	padding-bottom: 35px;
 }
+#canvas {
+	margin: 0 auto;
+	display: block;
+}
+#digital-time {
+	text-align: center;
+	margin-top: 8px;
+	margin-bottom: 10px;
+	font-weight: bolder;
+	color: darkblue;
+	font-size: .90rem;
+}
+#analog-digital {
+	position: relative;
+	top: -62px;
+	text-align: right;
+	margin-right: 25px;
+}
 .zebra-stripe:nth-of-type(odd) {
 	background: #d4d4d4;
 }
@@ -49,6 +67,19 @@ body {
 .task-header {
 	font-size: .75rem;
 }
+.task-type-header {
+	text-align: center;
+	display: block;
+	background-color: darkslategray;
+	color: white;
+	width: 100%;
+	margin: 0 auto;
+	margin-top: 10px;
+	font-style: italic;
+}
+.no-tasks {
+	font-size: .8rem;
+}
 .task-date-input {
 	font-size: .6rem;
 }
@@ -66,7 +97,7 @@ body {
 	font-size: 56px;
 	text-align: center;
 	margin-top: 20%;
-	margin-bottom: 40px;
+	margin-bottom: 5px;
 }
 #timer-text {
 	font-size: 56px;
@@ -74,6 +105,7 @@ body {
 	font-weight: bold;
 	margin-top: 0px;
 	margin-bottom: 0px;
+	color: darkblue;
 }
 .task-small-button {
 	text-align: center;

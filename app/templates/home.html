@@ -1,6 +1,19 @@
+<p id="timer-title" class="col">
+  {{ home.timer.title() }}
+</p>
+<div ng-include="'/templates/analog_digital_setting.html'"></div>
 <bt-timer
-  title='{{ home.timer.title() }}'
   clock='{{ home.timer.timeMmSs() }}'
-  label='{{ home.timer.startLabel() }}'
+  aord='{{ home.timer.showAnalogTimer }}'
   handle-start='home.timer.toggleTimer()'>
 </bt-timer>
+<div>
+  <button
+      type="button"
+      name="normal-app-button"
+      class="normal-app-button center-block"
+      ng-disabled="home.tasks.startButtonDisabled()"
+      ng-click="home.timer.toggleTimer()">
+    {{ home.timer.startLabel() }}
+  </button>
+</div>
